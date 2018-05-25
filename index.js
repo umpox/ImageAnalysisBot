@@ -1,21 +1,21 @@
 require('dotenv').config();
 require('isomorphic-fetch');
 
-const Unsplash = require('unsplash-js').default;
+const axios = require('axios');
 const { toJson } = require('unsplash-js');
 
 const {
-  UNSPLASH_APP_ID,
-  UNSPLASH_APP_SECRET,
-  UNSPLASH_APP_CALLBACK,
+  UNSPLASH_APP_BEARER_TOKEN,
 } = process.env;
 
-const unsplash = new Unsplash({
-  applicationId: UNSPLASH_APP_ID,
-  secret: UNSPLASH_APP_SECRET,
-  callbackUrl: UNSPLASH_APP_CALLBACK,
+const instance = axios.create({
+  baseURL: 'https://api.unsplash.com/',
+  timeout: 1000,
+  headers: { Authorization: `Client-ID ${UNSPLASH_APP_BEARER_TOKEN}` },
 });
 
-unsplash.photos.getRandomPhoto()
+instance.get('photos/random')
   .then(toJson)
-  .then(json => console.log(json));
+  .then(({ data }) => {
+    console.log(data.urls.regular);
+  }).catch(error => console.log(error));
