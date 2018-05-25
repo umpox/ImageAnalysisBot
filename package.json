@@ -1,0 +1,22 @@
+{
+  "name": "image-analysis-bot",
+  "version": "1.0.0",
+  "description": "Image analysis on random sourced images",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umpox/ImageAnalysisBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/umpox/ImageAnalysisBot/issues"
+  },
+  "homepage": "https://github.com/umpox/ImageAnalysisBot#readme",
+  "dependencies": {
+    "unsplash-js": "^4.8.0"
+  }
+}
