@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/umpox/ImageAnalysisBot#readme",
   "dependencies": {
+    "dotenv": "^5.0.1",
     "unsplash-js": "^4.8.0"
   }
 }
