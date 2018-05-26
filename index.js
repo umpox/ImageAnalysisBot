@@ -2,6 +2,8 @@ require('dotenv').config();
 require('isomorphic-fetch');
 
 const axios = require('axios');
+const oxford = require('project-oxford');
+const { encode } = require('base64-arraybuffer');
 
 const {
   UNSPLASH_APP_BEARER_TOKEN,
@@ -19,7 +21,7 @@ const vision = axios.create({
   timeout: 10000,
   headers: {
     'Ocp-Apim-Subscription-Key': VISION_SUBSCRIPTION_KEY,
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/octet-stream',
   },
 });
 
@@ -28,18 +30,25 @@ const getPhoto = async () => {
   return data.urls.regular;
 };
 
-const getCaption = async (url) => {
+const getCaption = async (img) => {
   const { data } = await vision.post(
     '/analyze?visualFeatures=description',
-    { url: 'https://images.pexels.com/photos/220762/pexels-photo-220762.jpeg' },
+    img,
   );
   return data.description.captions[0].text;
 };
 
+const getEncodedImage = async (url) => {
+  const response = await axios.get(url, { responseType: 'arraybuffer' });
+  const base64 = encode(response.data);
+  return oxford.makeBuffer(`data:image/jpeg;base64,${base64}`);
+};
+
 const run = async () => {
   const url = await getPhoto();
-  const caption = await getCaption(url);
+  const imageData = await getEncodedImage(url);
+  const caption = await getCaption(imageData);
   console.log(caption);
 };
 
-run();
+run().catch(error => console.log(error));

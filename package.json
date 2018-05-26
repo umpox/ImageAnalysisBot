@@ -18,10 +18,12 @@
   "homepage": "https://github.com/umpox/ImageAnalysisBot#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "base64-arraybuffer": "^0.1.5",
     "dotenv": "^5.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "isomorphic-fetch": "^2.2.1",
+    "project-oxford": "^2.0.0",
     "unsplash-js": "^4.8.0"
   },
   "devDependencies": {
