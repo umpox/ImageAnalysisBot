@@ -57,7 +57,16 @@ const getEncodedImage = async (url) => {
 };
 
 const tweetImageAndCaption = async (image, caption) => {
-  console.log(caption);
+  await twitter.post('media/upload', { media: image }, async (error, media) => {
+    if (!error) {
+      const status = {
+        status: caption,
+        media_ids: media.media_id_string,
+      };
+
+      await twitter.post('statuses/update', status);
+    }
+  });
 };
 
 const run = async () => {
@@ -68,9 +77,3 @@ const run = async () => {
 };
 
 run().catch(error => console.log(error));
-
-twitter.get('favorites/list', function(error, tweets, response) {
-  if(error) throw error;
-  console.log(tweets);  // The favorites.
-  console.log(response);  // Raw response object.
-});
