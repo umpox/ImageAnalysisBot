@@ -20,7 +20,7 @@ const getEncodedImage = async () => {
 };
 
 const tweetImageAndCaption = async (image, caption = {}) => {
-  if (caption.confidence > 0.90) {
+  if (caption.confidence > 0.85) {
     // Lets get rid of the boring pictures :)
     throw new Error('Image too easy');
   }
