@@ -14,7 +14,7 @@ const getCaption = async (img) => {
     '/analyze?visualFeatures=categories,description,color',
     img,
   );
-  return data.description.captions[0].text;
+  return data.description.captions[0];
 };
 
 const getEncodedImage = async (url) => {
@@ -40,7 +40,7 @@ const run = async () => {
   const url = await getPhoto();
   const imageData = await getEncodedImage(url);
   const caption = await getCaption(imageData);
-  await tweetImageAndCaption(imageData, caption);
+  await tweetImageAndCaption(imageData, caption.text);
 };
 
 run().catch(error => console.log(error));
