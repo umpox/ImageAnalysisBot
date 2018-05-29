@@ -11,7 +11,7 @@ const getPhoto = async () => {
 
 const getCaption = async (img) => {
   const { data } = await vision.post(
-    '/analyze?visualFeatures=description',
+    '/analyze?visualFeatures=categories,description,color',
     img,
   );
   return data.description.captions[0].text;
