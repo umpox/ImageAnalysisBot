@@ -25,7 +25,7 @@ const getEncodedImage = async (url) => {
   return oxford.makeBuffer(`data:image/jpeg;base64,${base64}`);
 };
 
-const tweetImageAndCaption = async (image, caption) => {
+const tweetImageAndCaption = async (image, caption = {}) => {
   if (caption.confidence > 0.90) {
     // Lets get rid of the boring pictures :)
     throw new Error('Image too easy');
