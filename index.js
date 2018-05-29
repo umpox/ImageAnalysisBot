@@ -1,15 +1,9 @@
-const axios = require('axios');
 const oxford = require('project-oxford');
 const { encode } = require('base64-arraybuffer');
 
 const { unsplash, vision, twitter } = require('./apis');
 
 let numberOfErrors = 0;
-
-const getPhoto = async () => {
-  const { data } = await unsplash.get('photos/random');
-  return data.urls.regular;
-};
 
 const getCaption = async (img) => {
   const { data } = await vision.post(
@@ -19,8 +13,8 @@ const getCaption = async (img) => {
   return data.description.captions[0];
 };
 
-const getEncodedImage = async (url) => {
-  const response = await axios.get(url, { responseType: 'arraybuffer' });
+const getEncodedImage = async () => {
+  const response = await unsplash.get('random', { responseType: 'arraybuffer' });
   const base64 = encode(response.data);
   return oxford.makeBuffer(`data:image/jpeg;base64,${base64}`);
 };
@@ -45,8 +39,7 @@ const tweetImageAndCaption = async (image, caption = {}) => {
 
 const run = async () => {
   try {
-    const url = await getPhoto();
-    const imageData = await getEncodedImage(url);
+    const imageData = await getEncodedImage();
     const caption = await getCaption(imageData);
     await tweetImageAndCaption(imageData, caption);
   } catch (error) {

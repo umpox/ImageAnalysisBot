@@ -5,7 +5,6 @@ const axios = require('axios');
 const Twitter = require('twitter');
 
 const {
-  UNSPLASH_APP_BEARER_TOKEN,
   VISION_SUBSCRIPTION_KEY,
   TWITTER_CONSUMER_KEY,
   TWITTER_CONSUMER_SECRET,
@@ -14,9 +13,8 @@ const {
 } = process.env;
 
 const unsplash = axios.create({
-  baseURL: 'https://api.unsplash.com/',
-  timeout: 1000,
-  headers: { Authorization: `Client-ID ${UNSPLASH_APP_BEARER_TOKEN}` },
+  baseURL: 'https://source.unsplash.com/',
+  timeout: 10000,
 });
 
 const vision = axios.create({
