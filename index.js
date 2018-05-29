@@ -4,7 +4,7 @@ const { encode } = require('base64-arraybuffer');
 
 const { unsplash, vision, twitter } = require('./apis');
 
-let hasNotErrored = true;
+let numberOfErrors = 0;
 
 const getPhoto = async () => {
   const { data } = await unsplash.get('photos/random');
@@ -44,15 +44,15 @@ const tweetImageAndCaption = async (image, caption) => {
 };
 
 const run = async () => {
-  const url = await getPhoto();
-  const imageData = await getEncodedImage(url);
-  const caption = await getCaption(imageData);
-  await tweetImageAndCaption(imageData, caption);
-};
-
-run().catch((error) => {
-  if (error.message === 'Image too easy' && hasNotErrored) {
-    hasNotErrored = false;
-    run();
+  try {
+    const url = await getPhoto();
+    const imageData = await getEncodedImage(url);
+    const caption = await getCaption(imageData);
+    await tweetImageAndCaption(imageData, caption);
+  } catch (error) {
+    if (error.message === 'Image too easy' && numberOfErrors < 2) {
+      numberOfErrors += 1;
+      run();
+    }
   }
-});
+};
