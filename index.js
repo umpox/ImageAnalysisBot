@@ -4,6 +4,8 @@ const { encode } = require('base64-arraybuffer');
 
 const { unsplash, vision, twitter } = require('./apis');
 
+let hasNotErrored = true;
+
 const getPhoto = async () => {
   const { data } = await unsplash.get('photos/random');
   return data.urls.regular;
@@ -24,10 +26,15 @@ const getEncodedImage = async (url) => {
 };
 
 const tweetImageAndCaption = async (image, caption) => {
+  if (caption.confidence > 0.90) {
+    // Lets get rid of the boring pictures :)
+    throw new Error('Image too easy');
+  }
+
   await twitter.post('media/upload', { media: image }, async (error, media) => {
     if (!error) {
       const status = {
-        status: caption,
+        status: caption.text,
         media_ids: media.media_id_string,
       };
 
@@ -40,7 +47,12 @@ const run = async () => {
   const url = await getPhoto();
   const imageData = await getEncodedImage(url);
   const caption = await getCaption(imageData);
-  await tweetImageAndCaption(imageData, caption.text);
+  await tweetImageAndCaption(imageData, caption);
 };
 
-run().catch(error => console.log(error));
+run().catch((error) => {
+  if (error.message === 'Image too easy' && hasNotErrored) {
+    hasNotErrored = false;
+    run();
+  }
+});
