@@ -24,8 +24,7 @@
     "eslint-config-airbnb": "^16.1.0",
     "isomorphic-fetch": "^2.2.1",
     "project-oxford": "^2.0.0",
-    "twitter": "^1.7.1",
-    "unsplash-js": "^4.8.0"
+    "twitter": "^1.7.1"
   },
   "devDependencies": {
     "eslint-plugin-import": "^2.12.0"
