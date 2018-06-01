@@ -43,7 +43,7 @@ const run = async () => {
     const caption = await getCaption(imageData);
     await tweetImageAndCaption(imageData, caption);
   } catch (error) {
-    if (error.message === 'Image too easy' && numberOfErrors < 2) {
+    if (error.message === 'Image too easy' && numberOfErrors < 4) {
       numberOfErrors += 1;
       run();
     }
