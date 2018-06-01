@@ -18,7 +18,7 @@ const unsplash = axios.create({
 });
 
 const vision = axios.create({
-  baseURL: 'https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/',
+  baseURL: 'https://westeurope.api.cognitive.microsoft.com/vision/v2.0/',
   timeout: 10000,
   headers: {
     'Ocp-Apim-Subscription-Key': VISION_SUBSCRIPTION_KEY,
