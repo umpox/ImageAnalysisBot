@@ -25,10 +25,17 @@ const tweetImageAndCaption = async (image, caption = {}) => {
     throw new Error('Image too easy');
   }
 
+  if (!caption.text) {
+    throw new Error('No caption');
+  }
+
+  // TOTALLYNOTROBOTS
+  const upperCaption = caption.text.toUpperCase();
+
   await twitter.post('media/upload', { media: image }, async (error, media) => {
     if (!error) {
       const status = {
-        status: caption.text,
+        status: upperCaption,
         media_ids: media.media_id_string,
       };
 
