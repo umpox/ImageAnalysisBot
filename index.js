@@ -52,7 +52,7 @@ const instagramPost = async (image, caption) => {
   await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
   return ig.publish.photo({
     file: image,
-    caption: caption,
+    caption: `${caption}\u{2063}\n\u{2063}\n#AI #ArtificialIntelligence #MachineLearning #ComputerVision`,
   });
 }
 
