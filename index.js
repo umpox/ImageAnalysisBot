@@ -1,5 +1,7 @@
+"use strict";
 const oxford = require('project-oxford');
 const { encode } = require('base64-arraybuffer');
+const { IgApiClient } = require('instagram-private-api')
 
 const { unsplash, vision, twitter } = require('./apis');
 
@@ -7,19 +9,11 @@ let numberOfErrors = 0;
 
 const getCaption = async (img) => {
   const { data } = await vision.post(
-    '/analyze?visualFeatures=categories,description,color',
+    '/analyze?visualFeatures=description',
     img,
   );
-  return data.description.captions[0];
-};
+  const caption = data.description.captions[0];
 
-const getEncodedImage = async () => {
-  const response = await unsplash.get('random', { responseType: 'arraybuffer' });
-  const base64 = encode(response.data);
-  return oxford.makeBuffer(`data:image/jpeg;base64,${base64}`);
-};
-
-const tweetImageAndCaption = async (image, caption = {}) => {
   if (caption.confidence > 0.85) {
     // Lets get rid of the boring pictures :)
     throw new Error('Image too easy');
@@ -30,27 +24,46 @@ const tweetImageAndCaption = async (image, caption = {}) => {
   }
 
   // TOTALLYNOTROBOTS
-  const upperCaption = caption.text.toUpperCase();
+  return caption.text.toUpperCase();
+};
 
-  await twitter.post('media/upload', { media: image }, async (error, media) => {
+const getEncodedImage = async () => {
+  const response = await unsplash.get('random/800x600', { responseType: 'arraybuffer' });
+  const base64 = encode(response.data);
+  return oxford.makeBuffer(`data:image/jpeg;base64,${base64}`);
+};
+
+const twitterPost = async (image, caption) => {
+  return twitter.post('media/upload', { media: image }, async (error, media) => {
     if (!error) {
       const status = {
-        status: upperCaption,
+        status: caption,
         media_ids: media.media_id_string,
       };
 
       await twitter.post('statuses/update', status);
     }
   });
-};
+}
+
+const instagramPost = async (image, caption) => {
+  const ig = new IgApiClient();
+  ig.state.generateDevice(process.env.IG_USERNAME);
+  await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
+  return ig.publish.photo({
+    file: image,
+    caption: caption,
+  });
+}
 
 const run = async () => {
   try {
     const imageData = await getEncodedImage();
     const caption = await getCaption(imageData);
-    await tweetImageAndCaption(imageData, caption);
+    await twitterPost(imageData, caption);
+    await instagramPost(imageData, caption);
   } catch (error) {
-    if (error.message === 'Image too easy' && numberOfErrors < 4) {
+    if (error.message === 'Image too easy' && numberOfErrors < 9) {
       numberOfErrors += 1;
       run();
     }
